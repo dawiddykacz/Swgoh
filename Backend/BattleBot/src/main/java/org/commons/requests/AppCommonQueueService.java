@@ -18,7 +18,7 @@ public abstract class AppCommonQueueService<T,U> {
         return this.queueService.getStatus(new NameId(name));
     }
 
-    public T getResult(@NonNull final String id) {
+    public Object getResult(@NonNull final String id) {
         return this.queueService.getResult(new NameId(id));
     }
 }

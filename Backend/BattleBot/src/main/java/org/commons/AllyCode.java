@@ -2,6 +2,8 @@ package org.commons;
 
 import lombok.NonNull;
 
+import java.util.Objects;
+
 public class AllyCode {
     private final String code;
 
@@ -25,5 +27,18 @@ public class AllyCode {
     @Override
     public String toString() {
         return this.code;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AllyCode allyCode = (AllyCode) o;
+        return Objects.equals(code, allyCode.code);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(code);
     }
 }

@@ -15,9 +15,12 @@ public abstract class CommonQueueService<T,U> {
     private final Map<NameId, T> resultMap = new ConcurrentHashMap<>();
     private final Set<NameId> processingSet = ConcurrentHashMap.newKeySet();
     private final UUIDService uuidService = UUIDService.getInstance();
+    private Exception exception;
 
     public CommonQueueService() {
         this.runThread();
+
+        this.exception = null;
     }
 
     public NameId add(@NonNull final U request){
@@ -36,7 +39,9 @@ public abstract class CommonQueueService<T,U> {
         return RequestStatus.NOT_FOUND;
     }
 
-    public T getResult(@NonNull final NameId id) {
+    public Object getResult(@NonNull final NameId id) {
+        if(this.exception != null) return this.exception;
+
         T result = this.resultMap.get(id);
         this.resultMap.remove(id);
         return result;
@@ -47,7 +52,7 @@ public abstract class CommonQueueService<T,U> {
         this.processingSet.remove(id);
     }
 
-    protected abstract void process(@NonNull final NameId id,U request);
+    protected abstract void process(@NonNull final NameId id,U request) throws IllegalArgumentException;
 
     private void runThread(){
         Thread thread = new Thread(this::runProcess);
@@ -62,7 +67,12 @@ public abstract class CommonQueueService<T,U> {
                 this.processingSet.add(nameId);
 
                 U request = this.requestMap.get(nameId);
-                process(nameId, request);
+                try {
+                    process(nameId, request);
+                }catch (final IllegalArgumentException exception){
+                    this.exception = exception;
+                }
+
                 this.processingSet.remove(nameId);
             } catch (InterruptedException ignore) {
 

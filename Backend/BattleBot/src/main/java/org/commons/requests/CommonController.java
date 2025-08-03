@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
-public class CommonController<T,U> {
+public abstract class CommonController<T,U> {
     private final AppCommonQueueService<T,U> appCommonQueueService;
 
     public CommonController(AppCommonQueueService<T,U> appCommonQueueService) {
@@ -23,9 +23,12 @@ public class CommonController<T,U> {
     }
 
     @GetMapping("/result")
-    public ResponseEntity<ResultDTO<T>> getStatus(@RequestBody UUIDRequestDto requestDto) {
-        final T result = this.appCommonQueueService.getResult(requestDto.getUuid());
+    public ResponseEntity<?> getStatus(@RequestBody UUIDRequestDto requestDto) {
+        final Object result = this.appCommonQueueService.getResult(requestDto.getUuid());
         if(result == null) return ResponseEntity.notFound().build();
+        if(result instanceof Exception exception)
+            return ResponseEntity.badRequest().body(exception.getMessage());
+
         return ResponseEntity.ok(new ResultDTO<>(result));
     }
 
