@@ -26,22 +26,18 @@ const rest = new REST({ version: '10' }).setToken(token);
 
 async function registerCommands() {
   try {
-    console.log('Rejestruję slash komendy...');
+    console.log('Registrering commands');
 
-    // Jeśli chcesz rejestrować globalnie (na wszystkich serwerach), użyj tej linii:
-    // await rest.put(Routes.applicationCommands(clientId), { body: commands });
-
-    // Jeśli chcesz rejestrować lokalnie (szybciej, tylko na jednym serwerze), użyj tej:
     await rest.put(Routes.applicationGuildCommands(clientId, guildId), { body: commands });
 
-    console.log('✅ Komendy zarejestrowane');
+    console.log('✅ Command registered');
   } catch (error) {
     console.error(error);
   }
 }
 
 client.once('ready', async () => {
-  console.log(`Zalogowano jako ${client.user.tag}`);
+  console.log(`Logged as ${client.user.tag}`);
   await registerCommands();
 });
 
@@ -55,7 +51,7 @@ client.on('interactionCreate', async interaction => {
     await command.execute(interaction);
   } catch (error) {
     console.error(error);
-    await interaction.reply({ content: 'Wystąpił błąd!', ephemeral: true });
+    await interaction.reply({ content: 'Error!', ephemeral: true });
   }
 });
 

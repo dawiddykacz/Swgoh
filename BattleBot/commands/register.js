@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js');
-const { sendRegister } = require('../components/connection'); 
+const { addRegisterRequest } = require('../components/RegisterAllyCode'); 
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -15,7 +15,7 @@ module.exports = {
     const userId = interaction.user.id;
     const allyCode = interaction.options.getString('allycode');
 
-    const response = await sendRegister(userId,allyCode);
+    const response = await addRegisterRequest(userId,allyCode);
     await interaction.reply(`<@${userId}>: ${response}`);
   },
 };
