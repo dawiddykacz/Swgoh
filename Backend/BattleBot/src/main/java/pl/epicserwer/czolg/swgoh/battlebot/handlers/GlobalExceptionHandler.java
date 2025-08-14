@@ -10,13 +10,13 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleIllegalArgument(IllegalArgumentException ex) {
         return ResponseEntity
                 .badRequest()
-                .body("[ERROR] "+ex.getMessage());
+                .body(ex.getMessage());
     }
 
     @ExceptionHandler(IllegalStateException.class)
     public ResponseEntity<String> handleStateArgument(IllegalStateException ex) {
         return ResponseEntity
                 .badRequest()
-                .body("[ERROR] "+ex.getMessage());
+                .body(ex.getMessage());
     }
 }

@@ -24,8 +24,8 @@ class BlockingQueueRepository<T> implements QueueRepository<T> {
 
         final NameId uuid = uuidService.generateUUID();
 
-        this.queue.add(uuid);
         this.requestsMap.put(uuid, request);
+        this.queue.add(uuid);
 
         return uuid;
     }
