@@ -1,5 +1,3 @@
-const basicUrl = 'http://localhost:0/api/v1/';
-
 async function sendRequest(url,method,data) {
   const response = await fetch(url, {
     method: method,
@@ -15,7 +13,26 @@ async function sendRequest(url,method,data) {
     throw new Error(errorMessage);
   }
 
-  return response.data;
+  return response.json();
+}
+
+async function sendGetRequest(url, params = {}) {
+  const queryString = new URLSearchParams(params).toString();
+  const fullUrl = queryString ? `${url}?${queryString}` : url;
+
+  const response = await fetch(fullUrl, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(errorText || `HTTP Error ${response.status}`);
+  }
+
+  return response.json();
 }
 
 async function parseResponse(response) {
@@ -27,4 +44,4 @@ async function parseResponse(response) {
   }
 }
 
-module.exports = { sendRequest };
+module.exports = { sendRequest, sendGetRequest };

@@ -1,4 +1,4 @@
-const { sendRequest } = require('./connection'); 
+const { sendRequest,sendGetRequest } = require('./connection'); 
 const { getEnpointWithBasicUrl } = require('./UrlRepository'); 
 
 async function addRegisterRequest(discordId, allyCode){
@@ -8,12 +8,28 @@ async function addRegisterRequest(discordId, allyCode){
         allyCode
     };
 
-    try{
-        const response = sendRequest(url,'POST',data)
-        console.log(response)
-    }catch(error){
-        console.log(error.message)
-    }
+    const response = await sendRequest(url,'POST',data)
+    return response['requestUUID']
 }
 
-module.exports = { addRegisterRequest };
+async function getRegisterStatus(uuid) {
+    const url = getEnpointWithBasicUrl("register");
+    const data = {
+        uuid
+    };
+
+    const response = await sendGetRequest(url,data);
+    return response['status']
+}
+
+async function getRegisterResult(uuid) {
+    const url = getEnpointWithBasicUrl("register/result");
+    const data = {
+        uuid
+    };
+
+    const response = await sendGetRequest(url,data);
+    return response['result']
+}
+
+module.exports = { addRegisterRequest,getRegisterStatus,getRegisterResult};
